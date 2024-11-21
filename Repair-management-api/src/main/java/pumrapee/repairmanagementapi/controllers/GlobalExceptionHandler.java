@@ -26,7 +26,7 @@ import pumrapee.repairmanagementapi.exceptions.ItemNotFoundException;
 import java.util.List;
 
 @RestControllerAdvice
-@CrossOrigin(origins = {"http://ip23kk2.sit.kmutt.ac.th", "http://localhost:5173", "http://intproj23.sit.kmutt.ac.th", "https://intproj23.sit.kmutt.ac.th"})
+@CrossOrigin(origins = {"http://localhost:5173"})
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({

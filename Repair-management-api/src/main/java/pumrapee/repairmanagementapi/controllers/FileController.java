@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
+@CrossOrigin(origins = {"http://localhost:5173"})
 @RequestMapping("/orders/{orderId}/files")
 public class FileController {
 

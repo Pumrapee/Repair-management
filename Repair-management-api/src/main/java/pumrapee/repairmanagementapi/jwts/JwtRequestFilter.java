@@ -54,7 +54,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             } else {
                 throw new BadCredentialsException("Authorization header missing");
             }
-        } catch (ExpiredJwtException | MalformedJwtException | UnsupportedJwtException | SignatureException | IllegalArgumentException ex) {
+        } catch (ExpiredJwtException | MalformedJwtException | UnsupportedJwtException | SignatureException | IllegalArgumentException | BadCredentialsException ex) {
             buildErrorResponse(response, ex, HttpStatus.UNAUTHORIZED, request);
         }
     }

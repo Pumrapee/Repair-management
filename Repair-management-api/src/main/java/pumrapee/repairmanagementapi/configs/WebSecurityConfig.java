@@ -15,6 +15,8 @@ import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import pumrapee.repairmanagementapi.jwts.JwtRequestFilter;
 import pumrapee.repairmanagementapi.jwts.JwtUserDetailsService;
 
@@ -27,17 +29,18 @@ public class WebSecurityConfig {
     JwtRequestFilter jwtAuthFilter;
     @Autowired
     JwtUserDetailsService jwtUserDetailsService;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorize -> authorize
+        http.csrf(csrf -> csrf.disable())
+                .authorizeRequests(authorize -> authorize
                         .requestMatchers("/login", "/register").permitAll()
                         .requestMatchers(HttpMethod.GET).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .httpBasic(withDefaults());
+                .httpBasic(withDefaults())
+                .cors(withDefaults());
 
         return http.build();
     }
