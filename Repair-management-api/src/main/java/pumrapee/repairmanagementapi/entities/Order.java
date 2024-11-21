@@ -1,5 +1,6 @@
 package pumrapee.repairmanagementapi.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -11,6 +12,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import pumrapee.repairmanagementapi.validators.ValidEnum;
 
 import java.time.Instant;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -38,17 +40,22 @@ public class Order {
     @Column(name = "description")
     private String description;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "created_at")
-    private Instant createdAt;
+    @Column(name = "created_at", insertable = false, updatable = false)
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ssXXX", timezone="UTC")
+    private OffsetDateTime createdAt;
 
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "updated_at")
-    private Instant updatedAt;
+    @Column(name = "updated_at", insertable = false, updatable = false)
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ssXXX", timezone="UTC")
+    private OffsetDateTime updatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "created_by", nullable = false)
     private User createdBy;
+
+
+    public String getCreatedBy() {
+        return createdBy.getUsername();
+    }
 
 }

@@ -4,6 +4,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import pumrapee.repairmanagementapi.entities.File;
 import pumrapee.repairmanagementapi.entities.Order;
 
+import java.util.List;
+
 public interface FileRepository extends JpaRepository<File, Integer> {
-    File findByOrder(Order order);
+    List<File> findByOrder(Order order);
 }

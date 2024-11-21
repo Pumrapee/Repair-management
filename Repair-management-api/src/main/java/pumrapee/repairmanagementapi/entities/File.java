@@ -1,5 +1,7 @@
 package pumrapee.repairmanagementapi.entities;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -10,6 +12,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
+import java.time.OffsetDateTime;
 
 @Getter
 @Setter
@@ -32,9 +35,11 @@ public class File {
     private String filePath;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "uploaded_at")
-    private Instant uploadedAt;
+    @Column(name = "uploaded_at", insertable = false, updatable = false)
+    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ssXXX", timezone="UTC")
+    private OffsetDateTime uploadedAt;
 
+    @JsonIgnore
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)

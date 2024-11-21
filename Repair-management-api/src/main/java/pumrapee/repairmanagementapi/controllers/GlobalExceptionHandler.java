@@ -18,6 +18,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+import pumrapee.repairmanagementapi.exceptions.BadRequestException;
 import pumrapee.repairmanagementapi.exceptions.ErrorResponse;
 import pumrapee.repairmanagementapi.exceptions.IOExceptionHandler;
 import pumrapee.repairmanagementapi.exceptions.ItemNotFoundException;
@@ -93,6 +94,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleIOException
             (Exception exception, WebRequest request) {
         return buildErrorResponse(exception, HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handleBadRequestException
+            (Exception exception, WebRequest request) {
+        return buildErrorResponse(exception, HttpStatus.BAD_REQUEST, request);
     }
 
 //    @ExceptionHandler(Exception.class)

@@ -48,21 +48,27 @@ public class FileService {
         }
     }
 
-    public File getFile(Integer orderId) {
-        return fileRepository.findByOrder(orderRepository.findById(orderId).orElseThrow(() -> new ItemNotFoundException("Order not found")));
+    public List<File> getFileByOrder(Integer orderId) {
+        List<File> file = fileRepository.findByOrder(orderRepository.findById(orderId).orElseThrow(() -> new ItemNotFoundException("Order not found")));
+        if (file == null) {
+            throw new ItemNotFoundException("File not found");
+        }
+        return file;
     }
 
-    public void deleteFile(Integer id) {
-        File file = fileRepository.findById(id)
-                .orElseThrow(() -> new ItemNotFoundException("File not found with id: " + id));
+    public File getFileById(Integer fileId) {
+        File file = fileRepository.findById(fileId).orElseThrow(() -> new ItemNotFoundException("File not found"));
+        return file;
+    }
 
+    public void deleteFile(Integer fileId) {
+        File file = fileRepository.findById(fileId).orElseThrow(() -> new ItemNotFoundException("File not found"));
         Path filePath = Paths.get(file.getFilePath());
         try {
             Files.deleteIfExists(filePath);
         } catch (IOException e) {
             throw new IOExceptionHandler("Failed to delete file from file system.");
         }
-
         fileRepository.delete(file);
     }
 }
