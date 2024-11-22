@@ -15,6 +15,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,23 +27,25 @@ public class FileService {
     @Autowired
     private OrderRepository orderRepository;
 
-    public String saveFile(Integer orderId, MultipartFile file) {
+    public List<String> saveFile(Integer orderId, MultipartFile[] files) {
         try {
             java.io.File uploadDir = new java.io.File(UPLOAD_DIR);
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
-
-            String filePath = UPLOAD_DIR + file.getOriginalFilename();
-            Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
-            Order order = orderRepository.findById(orderId).orElseThrow(() -> new ItemNotFoundException("Order not found"));
-            File fileEntity = new File();
-            fileEntity.setFileName(file.getOriginalFilename());
-            fileEntity.setFilePath(filePath);
-            fileEntity.setOrder(order);
-            fileRepository.save(fileEntity);
-
-            return filePath;
+            List<String> fileNames = new ArrayList<>();
+            for (MultipartFile file : files) {
+                String filePath = UPLOAD_DIR + file.getOriginalFilename();
+                Files.copy(file.getInputStream(), Paths.get(filePath), StandardCopyOption.REPLACE_EXISTING);
+                Order order = orderRepository.findById(orderId).orElseThrow(() -> new ItemNotFoundException("Order not found"));
+                File fileEntity = new File();
+                fileEntity.setFileName(file.getOriginalFilename());
+                fileEntity.setFilePath(filePath);
+                fileEntity.setOrder(order);
+                fileRepository.save(fileEntity);
+                fileNames.add(fileEntity.getFileName());
+            }
+            return fileNames;
         } catch (IOException e) {
             throw new IOExceptionHandler("Failed to upload file to file system.");
         }

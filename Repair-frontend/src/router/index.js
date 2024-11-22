@@ -3,7 +3,8 @@ import Login from '../views/Login.vue';
 import OrderManagement from '../views/OrderManagement.vue';
 
 const routes = [
-  { path: '/', component: Login },
+  { path: '/', redirect: '/orders' },
+  { path: '/login', component: Login },
   { path: '/orders', component: OrderManagement },
 ];
 

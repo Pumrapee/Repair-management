@@ -6,7 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pumrapee.repairmanagementapi.dtos.OrderRequestDTO;
 import pumrapee.repairmanagementapi.dtos.OrderResponseDTO;
+import pumrapee.repairmanagementapi.entities.File;
 import pumrapee.repairmanagementapi.entities.Order;
+import pumrapee.repairmanagementapi.services.FileService;
 import pumrapee.repairmanagementapi.services.OrderService;
 
 import java.util.List;
@@ -18,6 +20,8 @@ public class OrderController {
 
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private FileService fileService;
 
     @GetMapping
     public ResponseEntity<List<OrderResponseDTO>> getAllOrders(@RequestParam(required = false) String search) {
@@ -41,6 +45,9 @@ public class OrderController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteOrder(@PathVariable Integer id) {
+        for (File flie : fileService.getFileByOrder(id)) {
+            fileService.deleteFile(flie.getId());
+        }
         orderService.deleteOrder(id);
         return ResponseEntity.ok("Order deleted successfully.");
     }

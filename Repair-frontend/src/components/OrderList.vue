@@ -33,6 +33,7 @@ const filteredOrders = computed(() => {
       @click="$emit('add-order')"
       :disabled="!isLoggedIn"
       :class="!isLoggedIn ? 'bg-gray-300 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600'"
+      :title="!isLoggedIn ? 'You need to log in to add orders' : ''"
       class="text-white px-4 py-2 rounded-md shadow mb-4"
     >
       Add Order
@@ -84,6 +85,7 @@ const filteredOrders = computed(() => {
                 @click="$emit('edit-order', order)"
                 :disabled="!isLoggedIn"
                 :class="!isLoggedIn ? 'bg-gray-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'"
+                :title="!isLoggedIn ? 'You need to log in to edit orders' : ''"
                 class="text-white px-4 py-2 rounded-md shadow mr-2"
               >
                 Edit
@@ -93,6 +95,7 @@ const filteredOrders = computed(() => {
                 @click="$emit('delete-order', order.id)"
                 :disabled="!isLoggedIn"
                 :class="!isLoggedIn ? 'bg-gray-300 cursor-not-allowed' : 'bg-red-500 hover:bg-red-600'"
+                :title="!isLoggedIn ? 'You need to log in to delete orders' : ''"
                 class="text-white px-4 py-2 rounded-md shadow"
               >
                 Delete

@@ -22,8 +22,8 @@ watch(
   }
 );
 
-const handleFiles = (files) => {
-  filesToUpload.value = files;
+const handleFiles = (newFiles) => {
+  filesToUpload.value = [...filesToUpload.value, ...newFiles];
 };
 
 const hasChanges = computed(() => {
@@ -62,7 +62,7 @@ const submitForm = async () => {
     if (filesToUpload.value.length > 0) {
       const formData = new FormData();
       filesToUpload.value.forEach((file) => {
-        formData.append('file', file);
+        formData.append('files', file);
       });
 
       const uploadResponse = await fetchWithAuth(
@@ -106,55 +106,59 @@ const downloadFile = async (orderId, fileId) => {
   }
 };
 </script>
-
 <template>
   <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative">
+    <div class="bg-white rounded-lg shadow-lg w-full max-w-4xl p-10 relative">
       <button
-        class="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+        class="absolute top-5 right-5 text-gray-500 hover:text-gray-800 text-2xl"
         @click="$emit('close')"
       >
         ✕
       </button>
       <form @submit.prevent="submitForm">
-        <h2 class="text-xl font-bold mb-4">{{ localOrder.id ? 'Edit Order' : 'Add Order' }}</h2>
+        <h2 class="text-2xl font-bold mb-6">{{ localOrder.id ? 'Edit Order' : 'Add Order' }}</h2>
         
-        <div class="mb-4">
-          <label for="name" class="block text-sm font-medium text-gray-700">Order Name</label>
+        <div class="mb-6">
+          <label for="name" class="block text-lg font-medium text-gray-700">Order Name</label>
           <input
             v-model="localOrder.name"
             id="name"
             required
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
 
-        <div class="mb-4">
-          <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+        <div class="mb-6">
+          <label for="status" class="block text-lg font-medium text-gray-700">Status</label>
           <select
             v-model="localOrder.status"
             id="status"
             required
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
           >
             <option value="TODO">TODO</option>
             <option value="DONE">DONE</option>
           </select>
         </div>
 
-        <div class="mb-4">
-          <label for="description" class="block text-sm font-medium text-gray-700">Description</label>
+        <div class="mb-6">
+          <label for="description" class="block text-lg font-medium text-gray-700">Description</label>
           <textarea
             v-model="localOrder.description"
             id="description"
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            class="mt-2 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            rows="4"
           ></textarea>
         </div>
 
-        <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700">Existing Files</label>
+        <div class="mb-6">
+          <label class="block text-lg font-medium text-gray-700">Existing Files</label>
           <ul>
-            <li v-for="file in localFiles" :key="file.id" class="flex justify-between items-center">
+            <li
+              v-for="file in localFiles"
+              :key="file.id"
+              class="flex justify-between items-center text-lg"
+            >
               <span>{{ file.fileName }}</span>
               <div>
                 <button
@@ -176,13 +180,33 @@ const downloadFile = async (orderId, fileId) => {
           </ul>
         </div>
 
-        <FileUpload :order-id="localOrder.id" @files-changed="handleFiles" />
-        
-        <div class="mt-6 flex justify-end">
+        <div class="mb-6">
+          <label class="block text-lg font-medium text-gray-700">Files to Upload</label>
+          <ul>
+            <li
+              v-for="(file, index) in filesToUpload"
+              :key="index"
+              class="flex justify-between items-center text-lg"
+            >
+              <span>{{ file.name }}</span>
+              <button
+                type="button"
+                @click="filesToUpload.splice(index, 1)"
+                class="text-red-500 hover:text-red-700"
+              >
+                Remove
+              </button>
+            </li>
+          </ul>
+        </div>
+
+        <FileUpload @files-changed="handleFiles" />
+
+        <div class="mt-8 flex justify-end">
           <button
             type="button"
             @click="$emit('close')"
-            class="bg-gray-300 text-gray-700 px-4 py-2 rounded-md shadow hover:bg-gray-400 mr-2"
+            class="bg-gray-300 text-gray-700 px-6 py-3 rounded-md shadow hover:bg-gray-400 mr-4 text-lg"
           >
             Cancel
           </button>
@@ -190,7 +214,7 @@ const downloadFile = async (orderId, fileId) => {
             type="submit"
             :disabled="!hasChanges"
             :class="hasChanges ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-300 cursor-not-allowed'"
-            class="text-white px-4 py-2 rounded-md shadow"
+            class="text-white px-6 py-3 rounded-md shadow text-lg"
           >
             Submit
           </button>

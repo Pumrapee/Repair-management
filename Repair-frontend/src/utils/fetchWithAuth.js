@@ -20,7 +20,7 @@ export const fetchWithAuth = async (url, options = {}) => {
   if (response.status === 401) {
     alert("Session expired. Please log in again.");
     localStorage.removeItem("accessToken");
-    router.push("/");
+    router.push("/login");
   }
 
   return response;
