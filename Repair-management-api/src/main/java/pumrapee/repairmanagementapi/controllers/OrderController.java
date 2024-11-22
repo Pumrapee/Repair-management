@@ -14,7 +14,7 @@ import pumrapee.repairmanagementapi.services.OrderService;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:5173"})
+@CrossOrigin(origins = {"http://localhost:5173", "http://repair.eastasia.cloudapp.azure.com"})
 @RequestMapping("/orders")
 public class OrderController {
 

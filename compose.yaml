@@ -1,0 +1,36 @@
+services:
+  repair-proxy:
+    image: nginx:alpine
+    volumes:
+      - ./proxy:/etc/nginx/conf.d
+    ports:
+      - "80:80"
+    restart: unless-stopped
+
+  repair-fe:
+    image: repair-fe
+    build: 
+      context: Repair-frontend
+    restart: unless-stopped
+
+  repair-db:
+    image: mysql/mysql-server
+    env_file: project-env.sh
+    volumes:
+      - ./Database/scripts:/docker-entrypoint-initdb.d
+      - mysql_data:/var/lib/mysql
+    restart: unless-stopped
+
+  repair-api:
+    image: repair-api
+    env_file: project-env.sh
+    build: 
+      context: Repair-management-api
+    environment:
+      - mysql_db=repair-db
+    restart: unless-stopped
+    depends_on:
+      - repair-db
+
+volumes:
+  mysql_data:

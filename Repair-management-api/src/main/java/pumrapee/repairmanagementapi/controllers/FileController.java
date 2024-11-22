@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:5173"})
+@CrossOrigin(origins = {"http://localhost:5173", "http://repair.eastasia.cloudapp.azure.com"})
 @RequestMapping("/orders/{orderId}/files")
 public class FileController {
 

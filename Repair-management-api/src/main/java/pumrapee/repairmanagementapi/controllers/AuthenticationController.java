@@ -20,7 +20,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("")
-@CrossOrigin(origins = {"http://localhost:5173"})
+@CrossOrigin(origins = {"http://localhost:5173", "http://repair.eastasia.cloudapp.azure.com"})
 public class AuthenticationController {
 
     @Autowired
